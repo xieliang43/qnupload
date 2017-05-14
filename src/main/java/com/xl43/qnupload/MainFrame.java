@@ -275,6 +275,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
+        setLocationRelativeTo(null);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -304,7 +306,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void uploadBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_uploadBtnMouseClicked
         // TODO add your handling code here:
-        Uploader uploader = new Uploader(accessKeyField.getText(),secretField.getText(),bucketField.getText());
+        SettingEntity settingEntity = SettingEntity.getInstance();
+        Uploader uploader = new Uploader(settingEntity.getAccessKey(),settingEntity.getSecret(),settingEntity.getBucket());
         uploader.uploadFiles(filePaths, fileKeys);
     }//GEN-LAST:event_uploadBtnMouseClicked
 

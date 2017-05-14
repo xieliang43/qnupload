@@ -14,6 +14,9 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
@@ -35,31 +38,22 @@ public class Uploader {
         this.bucket = bucket;
     }
 
-    public final void uploadFiles(List<String> filePaths,List<String> fileKeys){
+    public final void uploadFiles(List<String> filePaths,List<String> fileKeys,UploaderAsynHandler handler){
 
-        Configuration cfg = new Configuration(Zone.autoZone());
 
-        UploadManager uploadManager = new UploadManager(cfg);
 
         Auth auth = Auth.create(accessKey,secret);
-        for (int i = 0; i < fileKeys.size() ; i++){
-            String upToken = auth.uploadToken(bucket,fileKeys.get(i));
-            System.out.println(upToken);
-            try {
-                Response response = uploadManager.put(filePaths.get(i),fileKeys.get(i),upToken);
-                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(),DefaultPutRet.class);
 
-                System.out.println(putRet.key);
-                System.out.println(putRet.hash);
-            } catch (QiniuException ex){
-                Response r = ex.response;
-                System.err.println(r.toString());
-                try {
-                    System.err.println(r.bodyString());
-                } catch (QiniuException ex2) {
-                    //ignore
-                }
-            }
+        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
+
+        for (int i = 0; i < fileKeys.size() ; i++){
+
+            String upToken = auth.uploadToken(bucket,fileKeys.get(i));
+
+            UploadTask task = new UploadTask(filePaths.get(i),fileKeys.get(i),upToken,handler);
+
+            fixedThreadPool.execute(task);
+
         }
     }
 

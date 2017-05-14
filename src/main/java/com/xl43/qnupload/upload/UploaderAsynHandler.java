@@ -5,10 +5,14 @@
  */
 package com.xl43.qnupload.upload;
 
+import com.qiniu.storage.model.DefaultPutRet;
+
 /**
  *
  * @author lart_017
  */
 public interface UploaderAsynHandler {
+
+    void success(DefaultPutRet ret);
     
 }
