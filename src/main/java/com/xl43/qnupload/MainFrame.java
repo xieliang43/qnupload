@@ -9,6 +9,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import com.xl43.qnupload.common.FileHandler;
 import com.xl43.qnupload.common.FileHandlerResult;
+import com.xl43.qnupload.entity.SettingEntity;
 import com.xl43.qnupload.upload.Uploader;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,25 +41,102 @@ public class MainFrame extends javax.swing.JFrame {
 
         jFileChooser = new javax.swing.JFileChooser();
         jOptionPane = new javax.swing.JOptionPane();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        settingDialog = new javax.swing.JDialog();
+        jLabel6 = new javax.swing.JLabel();
         accessKeyField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         secretField = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
         bucketField = new javax.swing.JTextField();
+        settingOkBtn = new javax.swing.JButton();
+        settingCancelBtn = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         prefixField = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         basePathField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        selectPathBtn = new javax.swing.JButton();
+        uploadBtn = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         resultTable = new javax.swing.JTable();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        settingMenuItem = new javax.swing.JMenuItem();
 
         jFileChooser.setFileSelectionMode(javax.swing.JFileChooser.FILES_AND_DIRECTORIES);
+
+        settingDialog.setTitle("设置");
+        settingDialog.setResizable(false);
+        settingDialog.setSize(new java.awt.Dimension(483, 250));
+
+        jLabel6.setText("accessKey");
+
+        accessKeyField.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+
+        jLabel7.setText("secret");
+
+        jLabel8.setText("bucket");
+
+        settingOkBtn.setText("Ok");
+        settingOkBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                settingOkBtnMouseClicked(evt);
+            }
+        });
+
+        settingCancelBtn.setText("Cancel");
+        settingCancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                settingCancelBtnMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout settingDialogLayout = new javax.swing.GroupLayout(settingDialog.getContentPane());
+        settingDialog.getContentPane().setLayout(settingDialogLayout);
+        settingDialogLayout.setHorizontalGroup(
+            settingDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingDialogLayout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addGroup(settingDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(settingDialogLayout.createSequentialGroup()
+                        .addComponent(settingCancelBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(settingOkBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(settingDialogLayout.createSequentialGroup()
+                        .addGroup(settingDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel6))
+                        .addGap(18, 18, 18)
+                        .addGroup(settingDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(accessKeyField)
+                            .addComponent(secretField)
+                            .addComponent(bucketField, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))))
+                .addContainerGap(67, Short.MAX_VALUE))
+        );
+        settingDialogLayout.setVerticalGroup(
+            settingDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingDialogLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addGroup(settingDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(accessKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(settingDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(secretField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(settingDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(bucketField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(settingDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(settingOkBtn)
+                    .addComponent(settingCancelBtn))
+                .addContainerGap(75, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Qnupload");
@@ -66,15 +144,6 @@ public class MainFrame extends javax.swing.JFrame {
         setName("MainFrame"); // NOI18N
         setSize(new java.awt.Dimension(900, 700));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
-
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("accessKey");
-
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("secret");
-
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("bucket");
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("prefix");
@@ -90,17 +159,17 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("base path");
 
-        jButton1.setText("select");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        selectPathBtn.setText("select");
+        selectPathBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
+                selectPathBtnMouseClicked(evt);
             }
         });
 
-        jButton2.setText("upload");
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+        uploadBtn.setText("upload");
+        uploadBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
+                uploadBtnMouseClicked(evt);
             }
         });
 
@@ -111,65 +180,40 @@ public class MainFrame extends javax.swing.JFrame {
             .addComponent(jSeparator2)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel5)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(accessKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(secretField, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(bucketField, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(56, 56, 56)
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(prefixField, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(basePathField)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 106, Short.MAX_VALUE))
+                .addComponent(basePathField, javax.swing.GroupLayout.PREFERRED_SIZE, 772, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(selectPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(prefixField, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(uploadBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(accessKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(secretField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(bucketField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(prefixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(31, 31, 31)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(basePathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(selectPathBtn)
+                    .addComponent(uploadBtn)
+                    .addComponent(jLabel4)
+                    .addComponent(prefixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         getContentPane().add(jPanel2);
 
         resultTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "file", "key", "process", "status"
@@ -205,22 +249,36 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1290, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1329, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         getContentPane().add(jPanel3);
 
+        jMenu1.setText("Setting");
+
+        settingMenuItem.setText("Setting");
+        settingMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                settingMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(settingMenuItem);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+    private void selectPathBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectPathBtnMouseClicked
         // TODO add your handling code here:
         int result = jFileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION){
@@ -238,21 +296,51 @@ public class MainFrame extends javax.swing.JFrame {
             Thread t = new Thread(fileHandler);
             t.start();
         }
-    }//GEN-LAST:event_jButton1MouseClicked
+    }//GEN-LAST:event_selectPathBtnMouseClicked
 
     private void prefixFieldInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_prefixFieldInputMethodTextChanged
         // TODO add your handling code here:
-//        System.out.println(prefixField.getText());
-//             
-//        createKeys();
-//        updateTableData();
     }//GEN-LAST:event_prefixFieldInputMethodTextChanged
 
-    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+    private void uploadBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_uploadBtnMouseClicked
         // TODO add your handling code here:
         Uploader uploader = new Uploader(accessKeyField.getText(),secretField.getText(),bucketField.getText());
         uploader.uploadFiles(filePaths, fileKeys);
-    }//GEN-LAST:event_jButton2MouseClicked
+    }//GEN-LAST:event_uploadBtnMouseClicked
+
+    private void settingCancelBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingCancelBtnMouseClicked
+        // TODO add your handling code here:
+        settingDialog.setVisible(false);
+    }//GEN-LAST:event_settingCancelBtnMouseClicked
+
+    private void settingOkBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingOkBtnMouseClicked
+        // TODO add your handling code here:
+        //存储设置信息
+        SettingEntity settingEntity = SettingEntity.getInstance();
+        
+        settingEntity.setAccessKey(accessKeyField.getText());
+        settingEntity.setSecret(secretField.getText());
+        settingEntity.setBucket(bucketField.getText());
+        
+        settingEntity.writeSetting();
+        
+        //隐藏对话框
+        settingDialog.setVisible(false);
+    }//GEN-LAST:event_settingOkBtnMouseClicked
+
+    private void settingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingMenuItemActionPerformed
+        // TODO add your handling code here:
+        //获取设置信息
+        SettingEntity settingEntity = SettingEntity.getInstance();
+        
+        accessKeyField.setText(settingEntity.getAccessKey());
+        secretField.setText(settingEntity.getSecret());
+        bucketField.setText(settingEntity.getBucket());
+        
+        //显示设置对话框
+        settingDialog.setVisible(true);
+        settingDialog.setLocationRelativeTo(this);
+    }//GEN-LAST:event_settingMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -348,14 +436,14 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField accessKeyField;
     private javax.swing.JTextField basePathField;
     private javax.swing.JTextField bucketField;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JFileChooser jFileChooser;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JOptionPane jOptionPane;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -364,5 +452,11 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField prefixField;
     private javax.swing.JTable resultTable;
     private javax.swing.JTextField secretField;
+    private javax.swing.JButton selectPathBtn;
+    private javax.swing.JButton settingCancelBtn;
+    private javax.swing.JDialog settingDialog;
+    private javax.swing.JMenuItem settingMenuItem;
+    private javax.swing.JButton settingOkBtn;
+    private javax.swing.JButton uploadBtn;
     // End of variables declaration//GEN-END:variables
 }
