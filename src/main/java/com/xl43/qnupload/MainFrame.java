@@ -7,10 +7,14 @@ package com.xl43.qnupload;
 
 import java.io.File;
 import javax.swing.JFileChooser;
+
+import com.qiniu.storage.model.DefaultPutRet;
 import com.xl43.qnupload.common.FileHandler;
 import com.xl43.qnupload.common.FileHandlerResult;
 import com.xl43.qnupload.entity.SettingEntity;
 import com.xl43.qnupload.upload.Uploader;
+import com.xl43.qnupload.upload.UploaderAsynHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +62,8 @@ public class MainFrame extends javax.swing.JFrame {
         selectPathBtn = new javax.swing.JButton();
         uploadBtn = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
+        activePrefixCheckbox = new javax.swing.JCheckBox();
+        activeParentPathCheckbox = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         resultTable = new javax.swing.JTable();
@@ -73,7 +79,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel6.setText("accessKey");
 
-        accessKeyField.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        accessKeyField.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jLabel7.setText("secret");
 
@@ -173,6 +179,20 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        activePrefixCheckbox.setText("active prefix");
+        activePrefixCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activePrefixCheckboxActionPerformed(evt);
+            }
+        });
+
+        activeParentPathCheckbox.setText("active parent path");
+        activeParentPathCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activeParentPathCheckboxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -180,31 +200,41 @@ public class MainFrame extends javax.swing.JFrame {
             .addComponent(jSeparator2)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel5)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel4))
                 .addGap(18, 18, 18)
-                .addComponent(basePathField, javax.swing.GroupLayout.PREFERRED_SIZE, 772, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(selectPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(prefixField, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(uploadBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(basePathField, javax.swing.GroupLayout.PREFERRED_SIZE, 772, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(selectPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(uploadBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(prefixField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
+                        .addComponent(activePrefixCheckbox)
+                        .addGap(51, 51, 51)
+                        .addComponent(activeParentPathCheckbox)))
+                .addContainerGap(284, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addGap(14, 14, 14)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(prefixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(activePrefixCheckbox)
+                    .addComponent(activeParentPathCheckbox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(basePathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectPathBtn)
-                    .addComponent(uploadBtn)
-                    .addComponent(jLabel4)
-                    .addComponent(prefixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(uploadBtn))
+                .addGap(3, 3, 3)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -216,14 +246,14 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "file", "key", "process", "status"
+                "file", "key", "status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -239,8 +269,6 @@ public class MainFrame extends javax.swing.JFrame {
         if (resultTable.getColumnModel().getColumnCount() > 0) {
             resultTable.getColumnModel().getColumn(2).setResizable(false);
             resultTable.getColumnModel().getColumn(2).setPreferredWidth(30);
-            resultTable.getColumnModel().getColumn(3).setResizable(false);
-            resultTable.getColumnModel().getColumn(3).setPreferredWidth(30);
         }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -275,8 +303,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
-        setLocationRelativeTo(null);
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -308,7 +334,39 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         SettingEntity settingEntity = SettingEntity.getInstance();
         Uploader uploader = new Uploader(settingEntity.getAccessKey(),settingEntity.getSecret(),settingEntity.getBucket());
-        uploader.uploadFiles(filePaths, fileKeys);
+        uploader.uploadFiles(filePaths, fileKeys,new UploaderAsynHandler(){
+
+			@Override
+			public void uploading(String path, String key) {
+				// TODO Auto-generated method stub
+				synchronized(this){
+                                    //更新界面
+                                    int row = fileKeys.indexOf(key);
+                                    resultTable.setValueAt("uploading", row, 2);
+				}
+			}
+
+			@Override
+			public void uploadSuccess(DefaultPutRet ret) {
+				// TODO Auto-generated method stub
+				System.out.println(ret.key+" uoload sucess!!!");
+				synchronized (this) {
+                                    int row = fileKeys.indexOf(ret.key);
+                                    resultTable.setValueAt("finish", row, 2);
+				}
+			}
+
+			@Override
+			public void uploadError(String path, String key, String errorMessage) {
+				// TODO Auto-generated method stub
+				synchronized (this) {
+                                    int row = fileKeys.indexOf(key);
+                                    resultTable.setValueAt("error", row, 2);
+				}
+			}
+        	
+        	
+        });
     }//GEN-LAST:event_uploadBtnMouseClicked
 
     private void settingCancelBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingCancelBtnMouseClicked
@@ -345,6 +403,18 @@ public class MainFrame extends javax.swing.JFrame {
         settingDialog.setLocationRelativeTo(this);
     }//GEN-LAST:event_settingMenuItemActionPerformed
 
+    private void activeParentPathCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeParentPathCheckboxActionPerformed
+        // TODO add your handling code here:
+        createKeys();
+        updateTableData();
+    }//GEN-LAST:event_activeParentPathCheckboxActionPerformed
+
+    private void activePrefixCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activePrefixCheckboxActionPerformed
+        // TODO add your handling code here:
+        createKeys();
+        updateTableData();
+    }//GEN-LAST:event_activePrefixCheckboxActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -376,6 +446,7 @@ public class MainFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 MainFrame mainFrame = new MainFrame();
+                mainFrame.setLocationRelativeTo(null);
                 mainFrame.setVisible(true);
             }
         });
@@ -399,7 +470,12 @@ public class MainFrame extends javax.swing.JFrame {
                 key = key.substring(1);
             }
             
-            if (prefix != null && prefix.length() > 0){
+            if (!activeParentPathCheckbox.isSelected()) {
+                String[] comStrings = key.split("/");
+                key = comStrings[comStrings.length - 1];
+            }
+            
+            if (prefix != null && prefix.length() > 0 && activePrefixCheckbox.isSelected()){
                 key = prefix+"/"+key;
             }
 
@@ -409,18 +485,17 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void updateTableData(){
         
-        String[][] data = new String[filePaths.size()][4];
+        String[][] data = new String[filePaths.size()][3];
         for (int i = 0 ; i < filePaths.size() ; i++){
             String path = filePaths.get(i);
             String key = fileKeys.get(i);
             
             data[i][0] = path;
             data[i][1] = key;
-            data[i][2] = ""+0;
-            data[i][3] = "waiting";
+            data[i][2] = "waiting";
         }
         
-        String[] header = new String [] {"file", "key", "process", "status"};
+        String[] header = new String [] {"file", "key", "status"};
         
         resultTable.setModel(new javax.swing.table.DefaultTableModel(data,header) {
             
@@ -437,6 +512,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField accessKeyField;
+    private javax.swing.JCheckBox activeParentPathCheckbox;
+    private javax.swing.JCheckBox activePrefixCheckbox;
     private javax.swing.JTextField basePathField;
     private javax.swing.JTextField bucketField;
     private javax.swing.JFileChooser jFileChooser;

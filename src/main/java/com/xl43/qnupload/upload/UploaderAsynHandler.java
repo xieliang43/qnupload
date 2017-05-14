@@ -13,6 +13,8 @@ import com.qiniu.storage.model.DefaultPutRet;
  */
 public interface UploaderAsynHandler {
 
-    void success(DefaultPutRet ret);
+	void uploading(String path,String key);
+    void uploadSuccess(DefaultPutRet ret);
+    void uploadError(String path,String key,String errorMessage);
     
 }

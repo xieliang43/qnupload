@@ -36,13 +36,14 @@ public class UploadTask implements Runnable {
         UploadManager uploadManager = new UploadManager(cfg);
 
         try {
+        	if (handler != null){
+                handler.uploading(path,key);
+            }
             Response response = uploadManager.put(path,key,token);
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(),DefaultPutRet.class);
             if (handler != null){
-                handler.success(putRet);
+                handler.uploadSuccess(putRet);
             }
-            System.out.println(putRet.key);
-            System.out.println(putRet.hash);
         } catch (QiniuException ex){
             Response r = ex.response;
             System.err.println(r.toString());
@@ -50,6 +51,10 @@ public class UploadTask implements Runnable {
                 System.err.println(r.bodyString());
             } catch (QiniuException ex2) {
                 //ignore
+            }
+            
+            if (handler != null){
+            	handler.uploadError(path, key, r.toString());
             }
         }
     }
